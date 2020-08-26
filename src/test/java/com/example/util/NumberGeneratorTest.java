@@ -2,25 +2,22 @@ package com.example.util;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class NumberGeneratorTest {
 
     private final String cardNumberMatcher = "400000[0-9]{10}";
     private final String pinMatcher = "[0-9]{4}";
 
-    @Mock
     private Random random;
     private Generator generator;
 
     @BeforeEach
     void setUp() {
-        random = Mockito.mock(Random.class);
+        random = new Random();
         generator = new NumberGenerator(random);
     }
 
