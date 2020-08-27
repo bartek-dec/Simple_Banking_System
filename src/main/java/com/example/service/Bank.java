@@ -5,6 +5,7 @@ import com.example.domain.BankAccount;
 import com.example.domain.Card;
 import com.example.domain.CreditCard;
 import com.example.util.Generator;
+import com.example.util.Validator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,10 +17,12 @@ public class Bank {
     private List<Account> accounts;
     private Scanner scanner;
     private Generator generator;
+    private Validator validator;
 
-    public Bank(Scanner scanner, Generator generator) {
+    public Bank(Scanner scanner, Generator generator, Validator validator) {
         this.scanner = scanner;
         this.generator = generator;
+        this.validator = validator;
         this.accounts = new ArrayList<>();
     }
 
@@ -127,6 +130,13 @@ public class Bank {
         System.out.println("Enter your PIN:");
         String pin = scanner.nextLine().trim();
 
+        boolean isValid = validator.validate(cardNumber);
+
+        if (!isValid) {
+            System.out.println("\nWrong card number or PIN!\n");
+            return null;
+        }
+
         Account account = findAccount(cardNumber);
 
         if (account == null) {
@@ -140,10 +150,6 @@ public class Bank {
     }
 
     private Account findAccount(String cardNumber) {
-        if (cardNumber == null) {
-            return null;
-        }
-
         return accounts.stream()
                 .filter(e -> Objects.equals(e.getCard().getCardNumber(), cardNumber))
                 .findFirst().orElse(null);
