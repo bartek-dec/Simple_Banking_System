@@ -1,15 +1,13 @@
 package com.example.util;
 
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class NumberGenerator implements Generator {
 
     private final Set<String> cardNumbers;
-    private final String IIN = "400000";
+    private final String BIN = "400000";
 
     private Random random;
 
@@ -22,12 +20,71 @@ public class NumberGenerator implements Generator {
     public String getCardNumber() {
         String cardNumber;
         do {
-            cardNumber = IIN + IntStream.range(0, 10)
-                    .mapToObj(e -> String.valueOf(random.nextInt(10)))
-                    .collect(Collectors.joining(""));
+            cardNumber = BIN + generateAccountIdentifier();
+            cardNumber = generateByLuhn(cardNumber);
         } while (!cardNumbers.add(cardNumber));
 
         return cardNumber;
+    }
+
+    private String generateAccountIdentifier() {
+        return IntStream.range(0, 9)
+                .mapToObj(e -> String.valueOf(random.nextInt(10)))
+                .collect(Collectors.joining(""));
+    }
+
+    private String generateByLuhn(String number) {
+        List<Integer> digits = Arrays.stream(number.split(""))
+                .map(e -> Integer.parseInt(e))
+                .collect(Collectors.toList());
+
+        digits = multiplyOddDigits(digits);
+        digits = reduceByNine(digits);
+        int sum = sumDigits(digits);
+        int lastDigit = findLastDigit(sum);
+
+        return number + lastDigit;
+    }
+
+    private List<Integer> multiplyOddDigits(List<Integer> digits) {
+        int size = digits.size();
+        for (int i = 0; i < size; i++) {
+            if (i % 2 == 0) {
+                digits.set(i, digits.get(i) * 2);
+            }
+        }
+        return digits;
+    }
+
+    private List<Integer> reduceByNine(List<Integer> digits) {
+        int size = digits.size();
+        for (int i = 0; i < size; i++) {
+            int value = digits.get(i);
+
+            if (value > 9) {
+                digits.set(i, value - 9);
+            }
+        }
+        return digits;
+    }
+
+    private int sumDigits(List<Integer> digits) {
+        return digits.stream()
+                .reduce(0, Integer::sum);
+    }
+
+    private int findLastDigit(int sum) {
+        if (sum % 10 == 0) {
+            return 0;
+        }
+
+        sum++;
+        int counter = 1;
+        while (sum % 10 != 0) {
+            sum++;
+            counter++;
+        }
+        return counter;
     }
 
     @Override
