@@ -9,4 +9,8 @@ public interface Card {
     void setPIN(String pin);
 
     String getPIN();
+
+    int getBalance();
+
+    void setBalance(int balance);
 }

@@ -4,6 +4,7 @@ public class CreditCard implements Card {
 
     private String cardNumber;
     private String PIN;
+    private int balance;
 
     public CreditCard(String cardNumber, String PIN) {
         this.cardNumber = cardNumber;
@@ -28,5 +29,15 @@ public class CreditCard implements Card {
     @Override
     public String getPIN() {
         return PIN;
+    }
+
+    @Override
+    public int getBalance() {
+        return balance;
+    }
+
+    @Override
+    public void setBalance(int balance) {
+        this.balance = balance;
     }
 }
