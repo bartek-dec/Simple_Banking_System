@@ -1,16 +1,12 @@
 package com.example.domain;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 public class BankAccount implements Account {
 
     private Card card;
-    private BigDecimal balance;
+    private int balance;
 
     public BankAccount(Card card) {
         this.card = card;
-        this.balance = BigDecimal.valueOf(0).setScale(2, RoundingMode.HALF_DOWN);
     }
 
     @Override
@@ -19,7 +15,7 @@ public class BankAccount implements Account {
     }
 
     @Override
-    public BigDecimal getBalance() {
+    public int getBalance() {
         return balance;
     }
 }
