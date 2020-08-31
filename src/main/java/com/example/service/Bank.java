@@ -1,7 +1,5 @@
 package com.example.service;
 
-import com.example.domain.Account;
-import com.example.domain.BankAccount;
 import com.example.domain.Card;
 import com.example.domain.CreditCard;
 import com.example.util.Generator;
@@ -14,7 +12,7 @@ import java.util.Scanner;
 
 public class Bank {
 
-    private List<Account> accounts;
+    private List<Card> cards;
     private Scanner scanner;
     private Generator generator;
     private Validator validator;
@@ -23,25 +21,25 @@ public class Bank {
         this.scanner = scanner;
         this.generator = generator;
         this.validator = validator;
-        this.accounts = new ArrayList<>();
+        this.cards = new ArrayList<>();
     }
 
     public void runSystem() {
         int option;
-        Account account;
+        Card card;
         do {
             mainMenu();
             option = getUserInput();
             switch (option) {
                 case 1:
-                    account = createAccount();
-                    accounts.add(account);
-                    System.out.println(displayAccount(account));
+                    card = createCard();
+                    cards.add(card);
+                    System.out.println(displayCard(card));
                     break;
                 case 2:
-                    account = logIntoAccount();
+                    card = logIntoAccount();
 
-                    if (account != null) {
+                    if (card != null) {
                         System.out.println("\nYou have successfully logged in!\n");
 
                         do {
@@ -50,7 +48,7 @@ public class Bank {
 
                             switch (option) {
                                 case 1:
-                                    showBalance(account);
+                                    showBalance(card);
                                     break;
                                 case 2:
                                     System.out.println("\nYou have successfully logged out!\n");
@@ -99,11 +97,6 @@ public class Bank {
         return input;
     }
 
-    private Account createAccount() {
-        Card card = createCard();
-        return new BankAccount(card);
-    }
-
     private Card createCard() {
         String cardNumber = generator.getCardNumber();
         String pin = generator.getPIN();
@@ -111,19 +104,19 @@ public class Bank {
         return new CreditCard(cardNumber, pin);
     }
 
-    private String displayAccount(Account account) {
+    private String displayCard(Card card) {
         StringBuilder builder = new StringBuilder();
 
         builder.append("\nYour card has been created\n");
         builder.append("Your card number:\n");
-        builder.append(account.getCard().getCardNumber() + "\n");
+        builder.append(card.getCardNumber() + "\n");
         builder.append("Your card PIN:\n");
-        builder.append(account.getCard().getPIN() + "\n");
+        builder.append(card.getPIN() + "\n");
 
         return builder.toString();
     }
 
-    private Account logIntoAccount() {
+    private Card logIntoAccount() {
         System.out.println("\nEnter your card number:");
         String cardNumber = scanner.nextLine().trim();
 
@@ -137,25 +130,25 @@ public class Bank {
             return null;
         }
 
-        Account account = findAccount(cardNumber);
+        Card account = findAccount(cardNumber);
 
         if (account == null) {
             System.out.println("\nWrong card number or PIN!\n");
             return null;
-        } else if (Objects.equals(account.getCard().getPIN(), pin)) {
+        } else if (Objects.equals(account.getPIN(), pin)) {
             return account;
         }
 
         return null;
     }
 
-    private Account findAccount(String cardNumber) {
-        return accounts.stream()
-                .filter(e -> Objects.equals(e.getCard().getCardNumber(), cardNumber))
+    private Card findAccount(String cardNumber) {
+        return cards.stream()
+                .filter(e -> Objects.equals(e.getCardNumber(), cardNumber))
                 .findFirst().orElse(null);
     }
 
-    private void showBalance(Account account) {
-        System.out.println("\nBalance: " + account.getBalance() + "\n");
+    private void showBalance(Card card) {
+        System.out.println("\nBalance: " + card.getBalance() + "\n");
     }
 }
