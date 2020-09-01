@@ -1,5 +1,9 @@
 package com.example;
 
+import com.example.domain.CardRepository;
+import com.example.domain.CardRepositoryImpl;
+import com.example.domain.CardService;
+import com.example.domain.CardServiceImpl;
 import com.example.service.Bank;
 import com.example.util.CardNumberValidator;
 import com.example.util.Generator;
@@ -18,28 +22,31 @@ import java.util.Scanner;
 
 public class Main {
 
-    private static final String path = "jdbc:sqlite:src/main/resources/";
+    private static final String url = "jdbc:sqlite:src/main/resources/";
+    private static final String path = "./src/main/resources/";
     private static final String query = "CREATE TABLE IF NOT EXISTS card(" +
-            "id INTEGER UNIQUE," +
-            "number TEXT," +
-            "pin TEXT," +
+            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "number TEXT, " +
+            "pin TEXT, " +
             "balance INTEGER DEFAULT 0);";
 
     public static void main(String[] args) {
         Optional<String> nameOptional = Arrays.stream(args)
                 .filter(e -> e.contains(".db"))
+                .map(String::trim)
                 .findFirst();
 
         if (nameOptional.isEmpty()) {
             return;
         }
 
-        String name = nameOptional.get();
-        File dataBase = new File(path + name);
+        String dbName = nameOptional.get();
+        File dataBase = new File(path + dbName);
+
         SQLiteDataSource dataSource = new SQLiteDataSource();
+        dataSource.setUrl(url + dbName);
 
         if (!dataBase.exists()) {
-            dataSource.setUrl(path + name);
             try (Connection connection = dataSource.getConnection()) {
                 try (Statement statement = connection.createStatement()) {
                     statement.executeUpdate(query);
@@ -48,12 +55,14 @@ public class Main {
                 System.out.println("Failed to connect with database");
             }
         }
-        
+
         Scanner scanner = new Scanner(System.in);
         Random random = new Random();
-        Generator generator = new NumberGenerator(random);
+        CardRepository repository = new CardRepositoryImpl(dataSource);
+        CardService service = new CardServiceImpl(repository);
+        Generator generator = new NumberGenerator(random, service);
         Validator validator = new CardNumberValidator();
-        Bank bank = new Bank(scanner, generator, validator);
+        Bank bank = new Bank(scanner, generator, validator, service);
 
         bank.runSystem();
     }
