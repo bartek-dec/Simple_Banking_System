@@ -1,27 +1,26 @@
 package com.example.service;
 
 import com.example.domain.Card;
+import com.example.domain.CardService;
 import com.example.domain.CreditCard;
 import com.example.util.Generator;
 import com.example.util.Validator;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
 public class Bank {
 
-    private List<Card> cards;
     private Scanner scanner;
     private Generator generator;
     private Validator validator;
+    private CardService service;
 
-    public Bank(Scanner scanner, Generator generator, Validator validator) {
+    public Bank(Scanner scanner, Generator generator, Validator validator, CardService service) {
         this.scanner = scanner;
         this.generator = generator;
         this.validator = validator;
-        this.cards = new ArrayList<>();
+        this.service = service;
     }
 
     public void runSystem() {
@@ -33,7 +32,7 @@ public class Bank {
             switch (option) {
                 case 1:
                     card = createCard();
-                    cards.add(card);
+                    service.addCard(card);
                     System.out.println(displayCard(card));
                     break;
                 case 2:
@@ -130,7 +129,7 @@ public class Bank {
             return null;
         }
 
-        Card account = findAccount(cardNumber);
+        Card account = findCard(cardNumber);
 
         if (account == null) {
             System.out.println("\nWrong card number or PIN!\n");
@@ -142,10 +141,8 @@ public class Bank {
         return null;
     }
 
-    private Card findAccount(String cardNumber) {
-        return cards.stream()
-                .filter(e -> Objects.equals(e.getCardNumber(), cardNumber))
-                .findFirst().orElse(null);
+    private Card findCard(String cardNumber) {
+        return service.findCard(cardNumber);
     }
 
     private void showBalance(Card card) {
