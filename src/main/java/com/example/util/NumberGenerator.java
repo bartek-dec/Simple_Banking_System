@@ -1,28 +1,31 @@
 package com.example.util;
 
+import com.example.domain.CardService;
+
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class NumberGenerator implements Generator {
 
-    private final Set<String> cardNumbers;
+    private CardService service;
     private final String BIN = "400000";
 
     private Random random;
 
-    public NumberGenerator(Random random) {
+    public NumberGenerator(Random random, CardService service) {
         this.random = random;
-        cardNumbers = new HashSet<>();
+        this.service = service;
     }
 
     @Override
     public String getCardNumber() {
+        List<String> numbers = service.findAllCardNumbers();
         String cardNumber;
         do {
             cardNumber = BIN + generateAccountIdentifier();
             cardNumber = generateByLuhn(cardNumber);
-        } while (!cardNumbers.add(cardNumber));
+        } while (numbers.contains(cardNumber));
 
         return cardNumber;
     }
