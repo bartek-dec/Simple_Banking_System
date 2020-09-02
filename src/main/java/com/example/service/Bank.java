@@ -127,11 +127,8 @@ public class Bank {
     }
 
     private Card logIntoAccount() {
-        System.out.println("\nEnter your card number:");
-        String cardNumber = scanner.nextLine().trim();
-
-        System.out.println("Enter your PIN:");
-        String pin = scanner.nextLine().trim();
+        String cardNumber = readCardNumber();
+        String pin = readPIN();
 
         boolean isValid = validator.validate(cardNumber);
 
@@ -150,6 +147,16 @@ public class Bank {
         }
 
         return null;
+    }
+
+    private String readPIN() {
+        System.out.println("Enter your PIN:");
+        return scanner.nextLine().trim();
+    }
+
+    private String readCardNumber() {
+        System.out.println("\nEnter your card number:");
+        return scanner.nextLine().trim();
     }
 
     private Card findCard(String cardNumber) {
