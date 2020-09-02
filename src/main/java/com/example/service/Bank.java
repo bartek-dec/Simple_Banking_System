@@ -50,6 +50,12 @@ public class Bank {
                                     showBalance(card);
                                     break;
                                 case 2:
+                                    break;
+                                case 3:
+                                    break;
+                                case 4:
+                                    break;
+                                case 5:
                                     System.out.println("\nYou have successfully logged out!\n");
                                     break;
                                 case 0:
@@ -76,7 +82,10 @@ public class Bank {
 
     private void displayLogInSubmenu() {
         System.out.println("1. Balance");
-        System.out.println("2. Log out");
+        System.out.println("2. Add income");
+        System.out.println("3. Do transfer");
+        System.out.println("4. Close account");
+        System.out.println("5. Log out");
         System.out.println("0. Exit");
     }
 
