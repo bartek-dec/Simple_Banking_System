@@ -31,6 +31,7 @@ public class Main {
             "balance INTEGER DEFAULT 0);";
 
     public static void main(String[] args) {
+        //program arguments->  -fileName cards.db
         Optional<String> nameOptional = Arrays.stream(args)
                 .filter(e -> e.contains(".db"))
                 .map(String::trim)
