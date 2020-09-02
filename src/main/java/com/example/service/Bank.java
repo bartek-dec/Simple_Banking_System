@@ -54,6 +54,7 @@ public class Bank {
                                     addBalance(card.getCardNumber());
                                     break;
                                 case 3:
+                                    doTransfer(card);
                                     break;
                                 case 4:
                                     closeAccount(card.getCardNumber());
@@ -145,11 +146,12 @@ public class Bank {
         if (account == null) {
             System.out.println("\nWrong card number or PIN!\n");
             return null;
-        } else if (Objects.equals(account.getPIN(), pin)) {
-            return account;
+        } else if (!Objects.equals(account.getPIN(), pin)) {
+            System.out.println("\nWrong card number or PIN!\n");
+            return null;
         }
 
-        return null;
+        return account;
     }
 
     private String readPIN() {
@@ -167,8 +169,10 @@ public class Bank {
     }
 
     private void showBalance(Card card) {
-        System.out.println("\nBalance: " + card.getBalance() + "\n");
+        Card updatedCard = service.findCard(card.getCardNumber());
+        System.out.println("\nBalance: " + updatedCard.getBalance() + "\n");
     }
+
 
     private void closeAccount(String cardNumber) {
         service.deleteAccount(cardNumber);
@@ -195,5 +199,36 @@ public class Bank {
             return -1;
         }
         return income;
+    }
+
+    private void doTransfer(Card sender) {
+        System.out.println("\nTransfer");
+        System.out.println("Enter card number:");
+
+        String receiverNumber = scanner.nextLine().trim();
+        boolean isValid = validator.validate(receiverNumber);
+        if (!isValid) {
+            System.out.println("Probably you made mistake in the card number. Please try again!\n");
+            return;
+        }
+
+        Card receiver = service.findCard(receiverNumber);
+        if (receiver == null) {
+            System.out.println("Such a card does not exist.\n");
+            return;
+        }
+
+        System.out.println("Enter how much money you want to transfer:");
+        int transfer = readIncome();
+        if (transfer < 0) {
+            System.out.println("Incorrect income!!!\n");
+            return;
+        } else if (transfer > sender.getBalance()) {
+            System.out.println("Not enough money!\n");
+            return;
+        }
+
+        service.transferMoney(transfer, sender.getCardNumber(), receiver.getCardNumber());
+        System.out.println("Success!\n");
     }
 }
