@@ -11,4 +11,6 @@ public interface CardRepository {
     int addCard(Card card);
 
     int deleteAccount(String cardNumber);
+
+    int addBalance(int amount, String cardNumber);
 }

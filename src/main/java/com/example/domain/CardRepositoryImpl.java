@@ -15,6 +15,8 @@ public class CardRepositoryImpl implements CardRepository {
     private String findAllCardNumbers = "SELECT number FROM card";
     private String addCard = "INSERT INTO card ('number', 'pin') VALUES ('";
     private String deleteAccount = "DELETE FROM card WHERE number = '";
+    private String addBalance = "UPDATE card SET balance = balance + ";
+
     private SQLiteDataSource dataSource;
 
     public CardRepositoryImpl(SQLiteDataSource dataSource) {
@@ -81,6 +83,19 @@ public class CardRepositoryImpl implements CardRepository {
         try (Connection connection = dataSource.getConnection()) {
             try (Statement statement = connection.createStatement()) {
                 String query = deleteAccount + cardNumber + "'";
+                return statement.executeUpdate(query);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @Override
+    public int addBalance(int amount, String cardNumber) {
+        try (Connection connection = dataSource.getConnection()) {
+            try (Statement statement = connection.createStatement()) {
+                String query = addBalance + amount + " WHERE number = '" + cardNumber + "'";
                 return statement.executeUpdate(query);
             }
         } catch (SQLException e) {
