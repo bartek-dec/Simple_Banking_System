@@ -9,4 +9,6 @@ public interface CardService {
     List<String> findAllCardNumbers();
 
     int addCard(Card card);
+
+    int deleteAccount(String cardNumber);
 }

@@ -28,4 +28,9 @@ public class CardServiceImpl implements CardService {
     public int addCard(Card card) {
         return repository.addCard(card);
     }
+
+    @Override
+    public int deleteAccount(String cardNumber) {
+        return repository.deleteAccount(cardNumber);
+    }
 }
