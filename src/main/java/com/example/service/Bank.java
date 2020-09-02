@@ -41,6 +41,7 @@ public class Bank {
                     if (card != null) {
                         System.out.println("\nYou have successfully logged in!\n");
 
+                        boolean flag = true;
                         do {
                             displayLogInSubmenu();
                             option = getUserInput();
@@ -50,20 +51,22 @@ public class Bank {
                                     showBalance(card);
                                     break;
                                 case 2:
+                                    addBalance(card.getCardNumber());
                                     break;
                                 case 3:
                                     break;
                                 case 4:
                                     closeAccount(card.getCardNumber());
-                                    System.out.println("\nThe account has been closed!\n");
                                     break;
                                 case 5:
                                     System.out.println("\nYou have successfully logged out!\n");
+                                    flag = false;
                                     break;
                                 case 0:
+                                    flag = false;
                                     break;
                             }
-                        } while (option == 1);
+                        } while (flag);
                     }
                     break;
                 case 0:
@@ -169,5 +172,28 @@ public class Bank {
 
     private void closeAccount(String cardNumber) {
         service.deleteAccount(cardNumber);
+        System.out.println("\nThe account has been closed!\n");
+    }
+
+    private void addBalance(String cardNumber) {
+        System.out.println("\nEnter income:");
+        int income = readIncome();
+
+        if (income < 0) {
+            System.out.println("Incorrect income!!!\n");
+        } else {
+            service.addBalance(income, cardNumber);
+            System.out.println("Income was added!\n");
+        }
+    }
+
+    private int readIncome() {
+        int income;
+        try {
+            income = Integer.parseInt(scanner.nextLine().trim());
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+        return income;
     }
 }
