@@ -33,4 +33,9 @@ public class CardServiceImpl implements CardService {
     public int deleteAccount(String cardNumber) {
         return repository.deleteAccount(cardNumber);
     }
+
+    @Override
+    public int addBalance(int amount, String cardNumber) {
+        return repository.addBalance(amount, cardNumber);
+    }
 }
