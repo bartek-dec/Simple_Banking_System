@@ -10,8 +10,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 class CardServiceImplTest {
@@ -72,6 +71,17 @@ class CardServiceImplTest {
         when(repository.deleteAccount(anyString())).thenReturn(1);
 
         int returnedValue = repository.deleteAccount(number);
+
+        assertEquals(1, returnedValue);
+    }
+
+    @Test
+    void addBalance() {
+        String number = "4000002141215291";
+
+        when(repository.addBalance(anyInt(), anyString())).thenReturn(1);
+
+        int returnedValue = repository.addBalance(100, number);
 
         assertEquals(1, returnedValue);
     }
