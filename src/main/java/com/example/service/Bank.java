@@ -54,6 +54,8 @@ public class Bank {
                                 case 3:
                                     break;
                                 case 4:
+                                    closeAccount(card.getCardNumber());
+                                    System.out.println("\nThe account has been closed!\n");
                                     break;
                                 case 5:
                                     System.out.println("\nYou have successfully logged out!\n");
@@ -156,5 +158,9 @@ public class Bank {
 
     private void showBalance(Card card) {
         System.out.println("\nBalance: " + card.getBalance() + "\n");
+    }
+
+    private void closeAccount(String cardNumber) {
+        service.deleteAccount(cardNumber);
     }
 }
