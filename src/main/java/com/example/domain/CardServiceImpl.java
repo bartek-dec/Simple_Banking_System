@@ -38,4 +38,9 @@ public class CardServiceImpl implements CardService {
     public int addBalance(int amount, String cardNumber) {
         return repository.addBalance(amount, cardNumber);
     }
+
+    @Override
+    public int transferMoney(int transfer, String sender, String receiver) {
+        return repository.transferMoney(transfer, sender, receiver);
+    }
 }
