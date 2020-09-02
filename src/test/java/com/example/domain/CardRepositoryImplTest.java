@@ -62,4 +62,18 @@ class CardRepositoryImplTest {
 
         assertEquals(1, repository.addCard(cardToAdd));
     }
+
+    @Test
+    void deleteAccountSuccess() {
+        String number = "4000008449433403";
+
+        assertEquals(1, repository.deleteAccount(number));
+    }
+
+    @Test
+    void deleteAccountNoSuchNumber() {
+        String number = "4000008449433400";
+
+        assertEquals(0, repository.deleteAccount(number));
+    }
 }

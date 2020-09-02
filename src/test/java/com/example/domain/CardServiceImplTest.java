@@ -64,4 +64,15 @@ class CardServiceImplTest {
 
         assertEquals(1, returnedValue);
     }
+
+    @Test
+    void deleteAccount() {
+        String number = "4000002141215291";
+
+        when(repository.deleteAccount(anyString())).thenReturn(1);
+
+        int returnedValue = repository.deleteAccount(number);
+
+        assertEquals(1, returnedValue);
+    }
 }
