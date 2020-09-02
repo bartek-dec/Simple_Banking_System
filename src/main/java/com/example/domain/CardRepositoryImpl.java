@@ -16,6 +16,7 @@ public class CardRepositoryImpl implements CardRepository {
     private String addCard = "INSERT INTO card ('number', 'pin') VALUES ('";
     private String deleteAccount = "DELETE FROM card WHERE number = '";
     private String addBalance = "UPDATE card SET balance = balance + ";
+    private String reduceBalance = "UPDATE card SET balance = balance - ";
 
     private SQLiteDataSource dataSource;
 
@@ -102,5 +103,22 @@ public class CardRepositoryImpl implements CardRepository {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    @Override
+    public int transferMoney(int transfer, String sender, String receiver) {
+        int affectedRows = 0;
+        try (Connection connection = dataSource.getConnection()) {
+            try (Statement statement = connection.createStatement()) {
+                String addTransfer = addBalance + transfer + " WHERE number = '" + receiver + "'";
+                affectedRows += statement.executeUpdate(addTransfer);
+
+                String subtractTransfer = reduceBalance + transfer + " WHERE number = '" + sender + "'";
+                affectedRows += statement.executeUpdate(subtractTransfer);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return affectedRows;
     }
 }
