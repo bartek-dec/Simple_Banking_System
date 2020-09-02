@@ -31,7 +31,7 @@ class CardRepositoryImplTest {
                 statement.executeUpdate("DELETE FROM card");
 
                 statement.executeUpdate("INSERT INTO card ('number', 'pin') VALUES ('4000008449433403', '1234')");
-                statement.executeUpdate("INSERT INTO card ('number', 'pin') VALUES ('4000008449433402', '4444')");
+                statement.executeUpdate("INSERT INTO card ('number', 'pin', 'balance') VALUES ('4000008449433402', '4444', 100)");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -82,7 +82,7 @@ class CardRepositoryImplTest {
 
     @Test
     void addBalance() {
-        String number = "4000008449433403";
+        String number = "4000008449433402";
 
         int affectedRecords = repository.addBalance(100, number);
 
@@ -92,12 +92,12 @@ class CardRepositoryImplTest {
             try (Statement statement = connection.createStatement()) {
                 String affectedRecord = "SELECT balance FROM card WHERE number = '4000008449433403'";
                 try (ResultSet resultSet = statement.executeQuery(affectedRecord)) {
-                    affectedBalance = resultSet.getInt("balance");
+                    notAffectedBalance = resultSet.getInt("balance");
                 }
 
                 String notAffectedRecord = "SELECT balance FROM card WHERE number = '4000008449433402'";
                 try (ResultSet resultSet = statement.executeQuery(notAffectedRecord)) {
-                    notAffectedBalance = resultSet.getInt("balance");
+                    affectedBalance = resultSet.getInt("balance");
                 }
             }
         } catch (SQLException e) {
@@ -105,7 +105,37 @@ class CardRepositoryImplTest {
         }
 
         assertEquals(1, affectedRecords);
-        assertEquals(100, affectedBalance);
+        assertEquals(200, affectedBalance);
         assertEquals(0, notAffectedBalance);
+    }
+
+    @Test
+    void transferMoney() {
+        String sender = "4000008449433402";
+        String receiver = "4000008449433403";
+
+        int affectedRecords = repository.transferMoney(40, sender, receiver);
+
+        int transferedFrom = -1;
+        int transferedTo = -1;
+        try (Connection connection = dataSource.getConnection()) {
+            try (Statement statement = connection.createStatement()) {
+                String affectedRecord = "SELECT balance FROM card WHERE number = '4000008449433402'";
+                try (ResultSet resultSet = statement.executeQuery(affectedRecord)) {
+                    transferedFrom = resultSet.getInt("balance");
+                }
+
+                String notAffectedRecord = "SELECT balance FROM card WHERE number = '4000008449433403'";
+                try (ResultSet resultSet = statement.executeQuery(notAffectedRecord)) {
+                    transferedTo = resultSet.getInt("balance");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        assertEquals(2, affectedRecords);
+        assertEquals(60, transferedFrom);
+        assertEquals(40, transferedTo);
     }
 }

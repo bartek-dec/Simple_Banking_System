@@ -81,8 +81,20 @@ class CardServiceImplTest {
 
         when(repository.addBalance(anyInt(), anyString())).thenReturn(1);
 
-        int returnedValue = repository.addBalance(100, number);
+        int returnedValue = service.addBalance(100, number);
 
         assertEquals(1, returnedValue);
+    }
+
+    @Test
+    void transferMoney() {
+        String sender = "4000008449433403";
+        String receiver = "4000008449433401";
+
+        when(repository.transferMoney(anyInt(), anyString(), anyString())).thenReturn(2);
+
+        int returnedValue = service.transferMoney(100, sender, receiver);
+
+        assertEquals(2, returnedValue);
     }
 }
